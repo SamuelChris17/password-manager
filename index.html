@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Password Generator</title>
+    <style>
+        .message {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Password Generator</h1>
+
+    <!-- Form for login info -->
+    <input type="text" id="username" placeholder="Enter your username">
+    <button onclick="generateAndSavePassword()">Generate and Save Password</button>
+
+    <!-- Display messages and generated password -->
+    <p id="message" class="message"></p>
+    <p id="passwordDisplay"></p>
+
+    <!-- Input for searching saved password by username -->
+    <input type="text" id="searchUsername" placeholder="Enter username to search">
+    <button onclick="searchPasswordByUsername()">Search Password</button>
+
+    <!-- Display search result -->
+    <p id="searchResult"></p>
+
+    <script>
+        // Function to generate a random password
+        function generatePassword() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let password = '';
+            for (let i = 0; i < 10; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return password;
+        }
+
+        // Function to generate a password and save login info in local storage
+        function generateAndSavePassword() {
+            const username = document.getElementById('username').value;
+            const messageElement = document.getElementById('message');
+            const passwordDisplayElement = document.getElementById('passwordDisplay');
+
+            if (username.trim() === '') {
+                messageElement.textContent = 'Please enter a username.';
+                messageElement.className = 'error';  // Change text color to red
+                return;
+            }
+
+            const password = generatePassword();
+            passwordDisplayElement.textContent = 'Generated Password: ' + password;
+
+            // Save the password using the username as the key
+            localStorage.setItem(username, password);
+            messageElement.textContent = 'Login info saved!';
+            messageElement.className = 'message';  // Change text color to green
+        }
+
+        // Function to search for a password by username
+        function searchPasswordByUsername() {
+            const searchUsername = document.getElementById('searchUsername').value;
+            const searchResultElement = document.getElementById('searchResult');
+
+            if (searchUsername.trim() === '') {
+                searchResultElement.textContent = 'Please enter a username to search.';
+                searchResultElement.className = 'error';  // Change text color to red
+                return;
+            }
+
+            const savedPassword = localStorage.getItem(searchUsername);
+            if (savedPassword) {
+                searchResultElement.textContent = 'Password for ' + searchUsername + ': ' + savedPassword;
+                searchResultElement.className = 'message';  // Change text color to green
+            } else {
+                searchResultElement.textContent = 'No password found for ' + searchUsername;
+                searchResultElement.className = 'error';  // Change text color to red
+            }
+        }
+    </script>
+</body>
+</html>
